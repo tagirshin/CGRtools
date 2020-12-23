@@ -119,3 +119,8 @@ CONTRIBUTORS
 * Tagir Akhmetshin <tagirshin@gmail.com>
 * Adelia Fatykhova <adelik21979@gmail.com>
 * Dinar Batyrshin <batyrshin-dinar@mail.ru>
+
+ACTUAL VERSION
+==============
+
+The latest version can be found [here](<https://github.com/stsouko/CGRtools>)
