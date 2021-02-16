@@ -85,11 +85,6 @@ General part
 
     pip install CGRtools[clean2d]
 
-* Install CGRtools library DEV version for features that are not well tested::
-
-    pip install -U git+https://github.com/cimm-kzn/CGRtools.git@master#egg=CGRtools
-
-
 **If you still have questions, please open issue within github.**
 
 PACKAGING
@@ -98,11 +93,6 @@ PACKAGING
 For wheel generation just type next command in source root::
 
     python setup.py bdist_wheel
-
-On Linux additionally do repairing of package::
-
-    pip install auditwheel
-    auditwheel repair dist/CGRtools-<version>-<python_version>-linux_x86_64.whl
 
 COPYRIGHT
 =========
@@ -126,3 +116,8 @@ CITE THIS
 CGRtools: Python Library for Molecule, Reaction, and Condensed Graph of Reaction Processing.
 Journal of Chemical Information and Modeling 2019 59 (6), 2516-2521.
 DOI: 10.1021/acs.jcim.9b00102
+
+ACTUAL VERSION
+==============
+
+The latest version can be found [here](<https://github.com/stsouko/CGRtools>)
