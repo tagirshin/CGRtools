@@ -82,12 +82,6 @@ General part
     ```
     pip install CGRTools
     ```    
-    
-* Install CGRtools library DEV version for features that are not well tested
-
-    ```
-    pip install -U git+https://github.com/cimm-kzn/CGRtools.git@master#egg=CGRtools
-    ```
 
 * Jupyter integration:
 
@@ -98,7 +92,7 @@ General part
     
 * Download tutorial files to same directory
 
-   <https://github.com/cimm-kzn/CGRtools/tree/master/tutorial>
+   <https://github.com/cimm-kzn/CGRtools/tree/3.1/tutorial>
 
 * Open .ipynb files from tutorial directory in Jupyter browser
 
