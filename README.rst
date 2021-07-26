@@ -121,3 +121,8 @@ CITE THIS
 CGRtools: Python Library for Molecule, Reaction, and Condensed Graph of Reaction Processing.
 Journal of Chemical Information and Modeling 2019 59 (6), 2516-2521.
 DOI: 10.1021/acs.jcim.9b00102
+
+ACTUAL VERSION
+==============
+
+The latest version can be found `here <https://github.com/stsouko/CGRtools>`_
