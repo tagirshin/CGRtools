@@ -22,6 +22,7 @@ from itertools import zip_longest
 from math import ceil
 from struct import pack_into, unpack_from
 from typing import List, Union, Tuple, Optional, Dict
+from weakref import ref
 from zlib import compress, decompress
 from . import cgr, query  # cyclic imports resolve
 from .bonds import Bond, DynamicBond, QueryBond
@@ -218,8 +219,8 @@ class MoleculeContainer(MoleculeStereo, Graph, Aromatize, Standardize, MoleculeS
         copy._cis_trans_stereo = self._cis_trans_stereo.copy()
         return copy
 
-    def substructure(self, atoms, *, as_query: bool = False, **kwargs) -> Union['MoleculeContainer',
-                                                                                'query.QueryContainer']:
+    def substructure(self, atoms, *, as_query: bool = False, recalculate_hydrogens=True,
+                     **kwargs) -> Union['MoleculeContainer', 'query.QueryContainer']:
         """
         Create substructure containing atoms from atoms list.
 
@@ -260,16 +261,22 @@ class MoleculeContainer(MoleculeStereo, Graph, Aromatize, Standardize, MoleculeS
         else:
             sub._conformers = [{n: c[n] for n in atoms} for c in self._conformers]
 
+            if recalculate_hydrogens:
+                sub._hydrogens = {}
+                for n in atoms:
+                    sub._calc_implicit(n)
+            else:
+                hg = self._hydrogens
+                sub._hydrogens = {n: hg[n] for n in atoms}
+
             # recalculate query marks
             sub._hybridizations = {}
-            sub._hydrogens = {}
             for n in atoms:
                 sub._calc_hybridization(n)
-                sub._calc_implicit(n)
             # fix_stereo will repair data
-            sub._atoms_stereo = self._atoms_stereo
-            sub._allenes_stereo = self._allenes_stereo
-            sub._cis_trans_stereo = self._cis_trans_stereo
+            sub._atoms_stereo = self._atoms_stereo.copy()
+            sub._allenes_stereo = self._allenes_stereo.copy()
+            sub._cis_trans_stereo = self._cis_trans_stereo.copy()
             sub._fix_stereo()
         return sub
 
@@ -287,6 +294,15 @@ class MoleculeContainer(MoleculeStereo, Graph, Aromatize, Standardize, MoleculeS
             return other.union(self, **kwargs)
         else:
             raise TypeError('MoleculeContainer expected')
+
+    def split(self, meta: bool = False) -> List['MoleculeContainer']:
+        """
+        split disconnected structure to connected substructures
+
+        :param meta: copy metadata to each substructure
+        :return: list of substructures
+        """
+        return [self.substructure(c, meta=meta, recalculate_hydrogens=False) for c in self.connected_components]
 
     def compose(self, other: Union['MoleculeContainer', 'cgr.CGRContainer']) -> 'cgr.CGRContainer':
         """
@@ -643,7 +659,6 @@ class MoleculeContainer(MoleculeStereo, Graph, Aromatize, Standardize, MoleculeS
         for o, ((n, m), s) in enumerate(cis_trans_stereo.items()):
             pack_into('>I', data, shift + 4 * o, (n << 20) | (m << 8) | s)
 
-        # 16 bit - neighbor | 3 bit bond type
         return compress(bytes(data), 9)
 
     @classmethod
@@ -651,8 +666,45 @@ class MoleculeContainer(MoleculeStereo, Graph, Aromatize, Standardize, MoleculeS
         """
         Unpack from compressed bytes.
         """
-        data = memoryview(decompress(data))
+        try:  # windows? ;)
+            from ._unpack import unpack
+        except ImportError:
+            return cls.pure_unpack(data)
+        (mapping, atom_numbers, isotopes, charges, radicals, hydrogens, plane, hybridization, bonds,
+         atoms_stereo, allenes_stereo, cis_trans_stereo) = unpack(decompress(data))
+
+        mol = object.__new__(cls)
+        mol._bonds = bonds
+        mol._plane = plane
+        mol._charges = charges
+        mol._radicals = radicals
+        mol._hydrogens = hydrogens
+        mol._atoms_stereo = atoms_stereo
+        mol._allenes_stereo = allenes_stereo
+        mol._cis_trans_stereo = cis_trans_stereo
+        mol._hybridizations = hybridization
+
+        mol._conformers = []
+        mol._parsed_mapping = {}
+        mol._Graph__meta = {}
+        mol._Graph__name = ''
+        mol._atoms = atoms = {}
+
+        for n, a, i in zip(mapping, atom_numbers, isotopes):
+            atoms[n] = a = object.__new__(Element.from_atomic_number(a))
+            a._Core__isotope = i
+            a._graph = ref(mol)
+            a._map = n
+        return mol
+
+    @classmethod
+    def pure_unpack(cls, data: bytes) -> 'MoleculeContainer':
+        """
+        Unpack from compressed bytes. Python implementation.
+        """
         from ..files._mdl.mol import common_isotopes
+
+        data = memoryview(decompress(data))
         mol = cls()
         atoms = mol._atoms
         bonds = mol._bonds
