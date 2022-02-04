@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  Copyright 2014-2021 Ramil Nugmanov <nougmanoff@protonmail.com>
+#  Copyright 2014-2022 Timur Madzhidov <tmadzhidov@gmail.com>
 #  This file is part of CGRtools.
 #
 #  CGRtools is free software; you can redistribute it and/or modify
@@ -62,15 +63,15 @@ if find_spec('cython'):
 
 setup(
     name='CGRtools',
-    version='4.1.33',
+    version='4.1.34',
     packages=['CGRtools', 'CGRtools.algorithms', 'CGRtools.algorithms.calculate2d', 'CGRtools.algorithms.components',
               'CGRtools.algorithms.standardize', 'CGRtools.containers', 'CGRtools.files', 'CGRtools.files._mdl',
               'CGRtools.periodictable', 'CGRtools.periodictable.element', 'CGRtools.reactor', 'CGRtools.utils',
               'CGRtools.attributes'],
-    url='https://github.com/stsouko/CGRtools',
+    url='https://github.com/cimm-kzn/CGRtools',
     license='LGPLv3',
-    author='Dr. Ramil Nugmanov',
-    author_email='nougmanoff@protonmail.com',
+    author='Dr. Ramil Nugmanov, Dr. Timur Madzhidov, Valentina Afonina',
+    author_email='tmadzhidov@gmail.com',
     python_requires='>=3.6.1',
     cmdclass=cmd_class,
     ext_modules=[Extension('CGRtools.containers._unpack', ['CGRtools/containers/_unpack.pyx'],

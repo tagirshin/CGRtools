@@ -92,9 +92,6 @@ General part
 
     pip install CGRtools[jit]
 
-* Install CGRtools library DEV version for features that are not well tested::
-
-    pip install -U git+https://github.com/stsouko/CGRtools.git@master#egg=CGRtools
 
 **If you still have questions, please open issue within github.**
 
@@ -108,9 +105,9 @@ For wheel generation just type next command in source root::
 COPYRIGHT
 =========
 
+* 2014-2022 Timur Madzhidov tmadzhidov@gmail.com product owner, idea and development supervision
 * 2014-2021 Ramil Nugmanov nougmanoff@protonmail.com main developer
-* 2014-2019 Timur Madzhidov tmadzhidov@gmail.com features and API discussion
-* 2014-2019 Alexandre Varnek varnek@unistra.fr base idea of CGR approach
+* 2021-2022 Valentina Afonina valiaafo@yandex.ru development and support
 
 CONTRIBUTORS
 ============
@@ -120,6 +117,7 @@ CONTRIBUTORS
 * Adelia Fatykhova adelik21979@gmail.com
 * Tagir Akhmetshin tagirshin@gmail.com
 * Ravil Mukhametgaleev sonic-mc@mail.ru
+* Valentina Afonina valiaafo@yandex.ru
 
 CITE THIS
 =========
@@ -127,8 +125,3 @@ CITE THIS
 CGRtools: Python Library for Molecule, Reaction, and Condensed Graph of Reaction Processing.
 Journal of Chemical Information and Modeling 2019 59 (6), 2516-2521.
 DOI: 10.1021/acs.jcim.9b00102
-
-ACTUAL VERSION
-==============
-
-The latest version can be found `here <https://github.com/stsouko/CGRtools>`_

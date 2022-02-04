@@ -6,9 +6,9 @@ if parent not in path:
     path.insert(0, parent)
 from CGRtools.periodictable import C, DynamicC, QueryC, DynamicQueryC, ListElement, AnyElement, DynamicAnyElement
 
-author = 'Dr. Ramil Nugmanov'
-copyright = '2014-2020, Dr. Ramil Nugmanov <nougmanoff@protonmail.com>'
-version = '4.0'
+author = 'Dr. Ramil Nugmanov, Dr. Timur Madzhidov, Valentina Afonina'
+copyright = '2014-2020, Dr. Ramil Nugmanov <nougmanoff@protonmail.com>, 2014-2022, Dr. Timur Madzhidov <tmadzhidov@gmail.com>'
+version = '4.1'
 project = 'CGRtools'
 
 needs_sphinx = '1.8'
@@ -27,7 +27,7 @@ autoclass_content = 'both'
 html_theme = 'sphinx_rtd_theme'
 html_logo = 'logo.jpg'
 html_favicon = 'favicon.ico'
-html_theme_options = {'github_user': 'stsouko', 'github_repo': 'CGRtools', 'show_related': True}
+html_theme_options = {'github_user': 'cimm-kzn', 'github_repo': 'CGRtools', 'show_related': True}
 html_show_copyright = True
 html_show_sourcelink = False
 html_sidebars = {

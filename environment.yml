@@ -1,3 +1,4 @@
+name: cgrtools-master
 channels:
   - conda-forge
   - rdkit
