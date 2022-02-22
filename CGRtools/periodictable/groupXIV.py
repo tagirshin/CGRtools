@@ -33,11 +33,11 @@ class C(Element, PeriodII, GroupXIV):
 
     @property
     def isotopes_distribution(self):
-        return FrozenDict({12: 0.9893, 13: 0.0107, 14: 0.0})
+        return FrozenDict({11: .0, 12: 0.9893, 13: 0.0107, 14: 0.0})
 
     @property
     def isotopes_masses(self):
-        return FrozenDict({12: 12.0, 13: 13.003355, 14: 14.003242})
+        return FrozenDict({11: 11.011432, 12: 12.0, 13: 13.003355, 14: 14.003242})
 
     @property
     def _common_valences(self):
