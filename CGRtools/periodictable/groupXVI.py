@@ -34,11 +34,11 @@ class O(Element, PeriodII, GroupXVI):
 
     @property
     def isotopes_distribution(self):
-        return FrozenDict({16: 0.99757, 17: 0.00038, 18: 0.00205})
+        return FrozenDict({15: .0, 16: 0.99757, 17: 0.00038, 18: 0.00205})
 
     @property
     def isotopes_masses(self):
-        return FrozenDict({16: 15.994915, 17: 16.999132, 18: 17.99916})
+        return FrozenDict({15: 15.003065, 16: 15.994915, 17: 16.999132, 18: 17.99916})
 
     @property
     def _common_valences(self):
