@@ -14,5 +14,5 @@ dependencies:
   - sphinx_rtd_theme
   - nbsphinx
   - pip:
-    - py-mini-racer
+    - mini-racer
     - .

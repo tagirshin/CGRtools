@@ -63,7 +63,7 @@ if find_spec('cython'):
 
 setup(
     name='CGRtools',
-    version='4.1.35',
+    version='4.1.36',
     packages=['CGRtools', 'CGRtools.algorithms', 'CGRtools.algorithms.calculate2d', 'CGRtools.algorithms.components',
               'CGRtools.algorithms.standardize', 'CGRtools.containers', 'CGRtools.files', 'CGRtools.files._mdl',
               'CGRtools.periodictable', 'CGRtools.periodictable.element', 'CGRtools.reactor', 'CGRtools.utils',
@@ -78,7 +78,7 @@ setup(
                            extra_compile_args=['-O3'])],
     setup_requires=['wheel', 'cython'],
     install_requires=['CachedMethods>=0.1.4,<0.2'],
-    extras_require={'mrv': ['lxml>=4.1'], 'clean2d': ['py-mini-racer>=0.4.0'], 'jit': ['numpy>=1.18', 'numba>=0.50']},
+    extras_require={'mrv': ['lxml>=4.1'], 'clean2d': ['mini-racer>=0.12.0'], 'jit': ['numpy>=1.18', 'numba>=0.50']},
     package_data={'CGRtools.algorithms.calculate2d': ['clean2d.js'], 'CGRtools.containers': ['_unpack.pyx']},
     data_files=[],
     zip_safe=False,

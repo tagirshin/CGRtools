@@ -17,9 +17,8 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with this program; if not, see <https://www.gnu.org/licenses/>.
 #
-from importlib.util import find_spec
 from math import sqrt
-from pkg_resources import resource_string
+from importlib.resources import files
 from random import random
 from ...containers import molecule
 from ...exceptions import ImplementationError
@@ -162,13 +161,13 @@ class Calculate2DCGR(Calculate2D):
         return ''.join(smiles), order
 
 
-if find_spec('py_mini_racer'):
-    from py_mini_racer.py_mini_racer import MiniRacer, JSEvalException
+try:
+    from py_mini_racer import MiniRacer, JSEvalException
 
     ctx = MiniRacer()
     ctx.eval('const self = this')
-    ctx.eval(resource_string(__name__, 'clean2d.js'))
-else:  # disable clean2d support
+    ctx.eval(files(__package__).joinpath('clean2d.js').read_text())
+except RuntimeError:
     ctx = None
 
 
