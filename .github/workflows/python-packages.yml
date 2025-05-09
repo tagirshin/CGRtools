@@ -18,6 +18,10 @@ jobs:
   wheels:
     name: Build wheels
     runs-on: ${{ matrix.os }}
+    env:
+      # build only CPython wheels
+      CIBW_SKIP: "pp*"
+      CIBW_BEFORE_BUILD: "python -m pip install cython"
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -27,7 +31,7 @@ jobs:
 
       # pin to the latest tagged cibuildwheel release – there is no floating “v2”
       - name: Build wheels with cibuildwheel
-        uses: pypa/cibuildwheel@v2.23.3     # ← fix 🛠️ :contentReference[oaicite:0]{index=0}
+        uses: pypa/cibuildwheel@v2.23.3
         env:
           CIBW_BEFORE_BUILD: "python -m pip install cython"
 
