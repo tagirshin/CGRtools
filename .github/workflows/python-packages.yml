@@ -1,8 +1,12 @@
-name: Build Python packages
+name: Build & publish Python packages
 
 on:
+  # ①  Every commit that lands in the repository
+  push:                    # or restrict with  branches: [main]  if you prefer
+  # ②  GitHub Release → PyPI (unchanged)
   release:
     types: [published]
+  # ③  Manual trigger from the Actions tab (unchanged)
   workflow_dispatch:
 
 jobs:
@@ -17,28 +21,32 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v5          # v5 is the current tag
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install build dependencies
+    - name: Install build tools
       run: |
         python -m pip install --upgrade pip
-        # `build` drives the PEP 517/518 build; Twine uploads the result.
         python -m pip install build twine
 
-    - name: Build wheel (and sdist for one matrix cell)
+    # ----------------------------------------------------------
+    # Build artefacts
+    # ----------------------------------------------------------
+    - name: Build wheel (and one sdist)
       run: |
         python -m build --wheel .
-        # build an sdist once (first matrix job) to avoid duplicates
+        # build the source tarball only once (on Ubuntu 3.12) to avoid duplicates
         if [ "${{ matrix.os }}${{ matrix.python-version }}" = "ubuntu-latest3.12" ]; then
           python -m build --sdist .
         fi
 
-    - name: Publish to PyPI
+    # ----------------------------------------------------------
+    # Upload logic
+    # ----------------------------------------------------------
+    - name: Publish to PyPI      # only on Release → PyPI
+      if: github.event_name == 'release'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        # --skip-existing lets all matrix jobs call Twine safely
-        python -m twine upload --non-interactive --skip-existing dist/*
+      run: python -m twine upload --non-interactive --skip-existing dist/*
