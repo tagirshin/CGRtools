@@ -4,8 +4,9 @@ name: Build & publish Python packages
 # EVENT MATRIX
 ###############################################################################
 on:
-  push:
-    tags: ['v*.*.*']      # GitHub “Publish release” button
+  push:                         # every commit (default branch & PRs)
+  release:
+    types: [published]          # GitHub “Publish release” button
   workflow_dispatch:            # manual trigger
 
 ###############################################################################
