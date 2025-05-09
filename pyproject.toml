@@ -1,0 +1,69 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+    "cython>=3.0" # ensure Cython is available when building from source
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cgrtools-stable"
+version = "4.2.0"
+description = "Chemical Graph Reaction (CGR) Toolkit — representation, manipulation and analysis of molecules, reactions and reaction mechanisms"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = {text = "LGPL-3.0-or-later"}
+authors = [
+    {name = "Dr. Ramil Nugmanov", email = "nougmanoff@protonmail.com"},
+    {name = "Dr. Timur Madzhidov", email = "tmadzhidov@gmail.com"},
+    {name = "Tagir Akhmetshin", email = "tagirshin@gmail.com"},
+    {name = "Valentina Afonina"}
+]
+requires-python = ">=3.6.1"
+keywords = ["chemoinformatics", "chemistry", "CGR", "molecule", "reaction"]
+classifiers = [
+    "Environment :: Plugins",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+# Runtime dependencies
+dependencies = [
+    "CachedMethods>=0.1.4,<0.2"
+]
+
+[project.optional-dependencies]
+mrv = ["lxml>=4.1"]
+clean2d = ["mini-racer>=0.12.0"]
+jit = [
+    "numpy>=1.18",
+    "numba>=0.50"
+]
+
+[tool.setuptools]
+packages = {find = {where = ["."], include = ["CGRtools*"], exclude = ["tests*", "doc*"]}}
+ext-modules = [
+  { name = "CGRtools.containers._unpack", sources = ["CGRtools/containers/_unpack.pyx"], extra-compile-args = ["-O3"] }
+]
+
+[tool.setuptools.package-data]
+"CGRtools.algorithms.calculate2d" = ["clean2d.js"]
+"CGRtools.containers" = ["_unpack.pyx"]
+
+[tool.setuptools.data-files]
+"lib" = [
+    "INCHI/libinchi.so",
+    "INCHI/libinchi.dll"
+]
