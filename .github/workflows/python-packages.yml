@@ -45,7 +45,6 @@ jobs:
     # Upload logic
     # ----------------------------------------------------------
     - name: Publish to PyPI      # only on Release → PyPI
-      if: github.event_name == 'release'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
