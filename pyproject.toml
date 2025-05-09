@@ -18,7 +18,7 @@ authors = [
     {name = "Tagir Akhmetshin", email = "tagirshin@gmail.com"},
     {name = "Valentina Afonina"}
 ]
-requires-python = ">=3.6.1"
+requires-python = ">=3.8"
 keywords = ["chemoinformatics", "chemistry", "CGR", "molecule", "reaction"]
 classifiers = [
     "Environment :: Plugins",
