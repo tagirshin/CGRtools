@@ -1,0 +1,44 @@
+name: Build Python packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  wheel:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # `build` drives the PEP 517/518 build; Twine uploads the result.
+        python -m pip install build twine
+
+    - name: Build wheel (and sdist for one matrix cell)
+      run: |
+        python -m build --wheel .
+        # build an sdist once (first matrix job) to avoid duplicates
+        if [ "${{ matrix.os }}${{ matrix.python-version }}" = "ubuntu-latest3.12" ]; then
+          python -m build --sdist .
+        fi
+
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        # --skip-existing lets all matrix jobs call Twine safely
+        python -m twine upload --non-interactive --skip-existing dist/*
