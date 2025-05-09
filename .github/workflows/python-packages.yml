@@ -1,85 +1,63 @@
-name: Build & publish Python packages
+name: Build & Publish to PyPI
 
-###############################################################################
-# EVENTS ──────────────────────────────────────────────────────────────────────
-###############################################################################
+# ────────────────────────────── Trigger ──────────────────────────────
 on:
-  push:                 # every commit (branches & PRs)
-  pull_request:
   release:
-    types: [published]  # GitHub “Publish release” button
-  workflow_dispatch:    # manual trigger
+    types: [published]      # fires when you press “Publish release”
+  workflow_dispatch:        # manual “Run workflow” button
 
-###############################################################################
-# JOB 1 ────────────────────────────────────────────────────────────────────────
-# Build wheels for all OSes & Python versions with cibuildwheel
-###############################################################################
+# ───────────────────────────── Common settings ───────────────────────
+permissions:
+  id-token: write           # OIDC for PyPI “Trusted Publishing”
+  contents: read            # allow checkout/download-artifact
+
+env:
+  # skip builds that keep failing for you
+  CIBW_SKIP: "pp* *-musllinux_*"
+  CIBW_BEFORE_BUILD: "python -m pip install cython"
+
+# ───────────────────────────── Job 1: wheels ─────────────────────────
 jobs:
   wheels:
-    name: Build wheels
     runs-on: ${{ matrix.os }}
-    env:
-      # build only CPython wheels
-      CIBW_SKIP: "pp* *-musllinux_*"
-      CIBW_BEFORE_BUILD: "python -m pip install cython"
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
 
-      # pin to the latest tagged cibuildwheel release – there is no floating “v2”
       - name: Build wheels with cibuildwheel
         uses: pypa/cibuildwheel@v2.23.3
-        env:
-          CIBW_BEFORE_BUILD: "python -m pip install cython"
 
-      - name: Upload wheel artifacts
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
 
-###############################################################################
-# JOB 2 ────────────────────────────────────────────────────────────────────────
-# Build a single source distribution (sdist) on Linux
-###############################################################################
+# ───────────────────────────── Job 2: sdist ──────────────────────────
   sdist:
-    name: Build sdist
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5     # ensures a modern Python for the build step
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-      - name: Install build
-        run: python -m pip install --upgrade build
-      - name: Build sdist
-        run: python -m build --sdist .
-      - name: Upload sdist artifact
-        uses: actions/upload-artifact@v4
+          python-version: '3.12'
+      - run: python -m pip install --upgrade build
+      - run: python -m build --sdist .
+      - uses: actions/upload-artifact@v4
         with:
           name: sdist
           path: dist/*.tar.gz
 
-###############################################################################
-# JOB 3 ────────────────────────────────────────────────────────────────────────
-# Publish to PyPI **only** when a GitHub Release is published
-###############################################################################
-  publish-pypi:
-    if: github.event_name == 'release'       # guard against accidental uploads
+# ───────────────────────────── Job 3: publish ────────────────────────
+  publish:
     needs: [wheels, sdist]
     runs-on: ubuntu-latest
-    environment: pypi                       # optional protected-branch rules
-    permissions:
-      contents: read                        # minimum for API-token publishing
+    environment: pypi          # optional protected environment
     steps:
       - uses: actions/download-artifact@v4
         with:
-          path: dist                        # action finds files recursively
+          path: dist
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          api-token: ${{ secrets.PYPI_API_TOKEN }}
-          skip-existing: true
