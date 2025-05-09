@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       # build only CPython wheels
-      CIBW_SKIP: "pp*"
+      CIBW_SKIP: "pp* *-musllinux_*"
       CIBW_BEFORE_BUILD: "python -m pip install cython"
     strategy:
       matrix:
