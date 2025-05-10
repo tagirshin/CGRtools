@@ -29,9 +29,6 @@ jobs:
         mkdir -p dist
         mv wheelhouse/*.whl dist/
 
-    - name: Build sdist
-      run: python -m build --sdist
-
     - name: Publish to PyPI with Twine
       env:
         TWINE_USERNAME: __token__
