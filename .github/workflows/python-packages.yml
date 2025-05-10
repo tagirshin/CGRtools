@@ -1,5 +1,4 @@
 name: Build Python packages
-
 on:
   release:
     types: [published]
@@ -12,18 +11,25 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+
+    - name: Install tooling
       run: |
-        python -m pip install --upgrade pip build twine
+        python -m pip install --upgrade pip \
+          setuptools>=70 wheel cython build twine
+
     - name: Build wheel
       run: |
         python -m build --wheel --no-isolation
+
     - name: Publish package
       run: |
-        twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} --non-interactive --skip-existing dist/*
+        twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} \
+          --non-interactive --skip-existing dist/*
