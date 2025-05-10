@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cgrtools-stable"
-version = "4.2.11"
+version = "4.2.12"
 description = "Chemical Graph Reaction (CGR) Toolkit — representation, manipulation and analysis of molecules, reactions and reaction mechanisms"
 readme = {file = "README.rst", content-type = "text/x-rst"}
 license = {text = "LGPL-3.0-or-later"}
