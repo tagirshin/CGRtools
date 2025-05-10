@@ -19,10 +19,23 @@ jobs:
 
     - name: Build wheels with cibuildwheel
       uses: pypa/cibuildwheel@v2.20
-      env:
-        CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
-
-    - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        output-dir: wheelhouse
+      env:
+        CIBW_BUILD: "cp310-* cp311-* cp312-*"
+
+    - name: Move wheels to dist
+      run: |
+        mkdir -p dist
+        mv wheelhouse/*.whl dist/
+
+    - name: Build sdist
+      run: python -m build --sdist
+
+    - name: Publish to PyPI with Twine
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python -m pip install --upgrade twine
+        twine upload --non-interactive --skip-existing dist/* wheelhouse/*.whl
