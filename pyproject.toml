@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cgrtools-stable"
-version = "4.2.0"
+version = "4.2.2"
 description = "Chemical Graph Reaction (CGR) Toolkit — representation, manipulation and analysis of molecules, reactions and reaction mechanisms"
 readme = {file = "README.rst", content-type = "text/x-rst"}
 license = {text = "LGPL-3.0-or-later"}
@@ -41,13 +41,9 @@ classifiers = [
 
 # Runtime dependencies
 dependencies = [
-    "CachedMethods>=0.1.4,<0.2"
-]
-
-[project.optional-dependencies]
-mrv = ["lxml>=4.1"]
-clean2d = ["mini-racer>=0.12.0"]
-jit = [
+    "CachedMethods>=0.1.4,<0.2",
+    "mini-racer>=0.12.0",
+    "lxml>=4.1",
     "numpy>=1.18",
     "numba>=0.50"
 ]

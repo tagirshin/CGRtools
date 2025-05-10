@@ -3,12 +3,12 @@ name: Build & Publish to PyPI
 # ────────────────────────────── Trigger ──────────────────────────────
 on:
   release:
-    types: [published]      # fires when you press “Publish release”
-  workflow_dispatch:        # manual “Run workflow” button
+    types: [published]      # fires when you press "Publish release"
+  workflow_dispatch:        # manual "Run workflow" button
 
 # ───────────────────────────── Common settings ───────────────────────
 permissions:
-  id-token: write           # OIDC for PyPI “Trusted Publishing”
+  id-token: write           # OIDC for PyPI "Trusted Publishing"
   contents: read            # allow checkout/download-artifact
 
 env:
@@ -54,7 +54,6 @@ jobs:
   publish:
     needs: [wheels, sdist]
     runs-on: ubuntu-latest
-    environment: pypi          # optional protected environment
     steps:
       - uses: actions/download-artifact@v4
         with:
