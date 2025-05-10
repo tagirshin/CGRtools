@@ -1,65 +1,29 @@
-name: Build & Publish to PyPI
+name: Build Python packages
 
-# ────────────────────────────── Trigger ──────────────────────────────
 on:
   release:
-    types: [published]      # fires when you press “Publish release”
-  workflow_dispatch:        # manual “Run workflow” button
+    types: [published]
+  workflow_dispatch:
 
-# ───────────────────────────── Common settings ───────────────────────
-permissions:
-  id-token: write           # OIDC for PyPI “Trusted Publishing”
-  contents: read            # allow checkout/download-artifact
-
-env:
-  # skip builds that keep failing for you
-  CIBW_SKIP: "pp* *-musllinux_*"
-  CIBW_BEFORE_BUILD: "python -m pip install cython"
-
-# ───────────────────────────── Job 1: wheels ─────────────────────────
 jobs:
-  wheels:
+  binary:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-
+        os: [windows-latest, macos-latest, ubuntu-20.04]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Build wheels with cibuildwheel
-        uses: pypa/cibuildwheel@v2.23.3
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.os }}
-          path: wheelhouse/*.whl
-
-# ───────────────────────────── Job 2: sdist ──────────────────────────
-  sdist:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install --upgrade build
-      - run: python -m build --sdist .
-      - uses: actions/upload-artifact@v4
-        with:
-          name: sdist
-          path: dist/*.tar.gz
-
-# ───────────────────────────── Job 3: publish ────────────────────────
-  publish:
-    needs: [wheels, sdist]
-    runs-on: ubuntu-latest
-    environment: pypi          # optional protected environment
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip poetry twine
+    - name: Build wheel
+      run: |
+        poetry build -f wheel
+    - name: Publish package
+      run: |
+        twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} --non-interactive --skip-existing dist/*
